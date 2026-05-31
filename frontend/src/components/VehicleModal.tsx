@@ -68,8 +68,8 @@ export function VehicleModal({ open, onOpenChange, vehicle, onSaved }: VehicleMo
     reset()
   }, [open, vehicle])
 
-  function update<K extends keyof FormState>(key: K, value: FormState[K]) {
-    setForm((prev) => ({ ...prev, [key]: value }))
+  function update(patch: Partial<FormState>) {
+    setForm((prev) => ({ ...prev, ...patch }))
   }
 
   async function handleSubmit(event: React.FormEvent) {
@@ -77,15 +77,15 @@ export function VehicleModal({ open, onOpenChange, vehicle, onSaved }: VehicleMo
     setSubmitting(true)
     setError(null)
 
-    const payload = {
-      registrationPlate: form.registrationPlate.trim(),
-      name: form.name.trim(),
-      colour: form.colour.trim(),
-      engineType: form.engineType,
-      avgConsumption: Number(form.avgConsumption),
-    }
-
     try {
+      const payload = {
+        registrationPlate: form.registrationPlate.trim(),
+        name: form.name.trim(),
+        colour: form.colour.trim(),
+        engineType: form.engineType,
+        avgConsumption: Number(form.avgConsumption),
+      }
+
       if (vehicle) {
         await updateVehicle(vehicle.id, payload)
       } else {
@@ -112,7 +112,7 @@ export function VehicleModal({ open, onOpenChange, vehicle, onSaved }: VehicleMo
             <Input
               id="registrationPlate"
               value={form.registrationPlate}
-              onChange={(e) => update('registrationPlate', e.target.value)}
+              onChange={(e) => update({ registrationPlate: e.target.value })}
               required
             />
           </div>
@@ -121,7 +121,7 @@ export function VehicleModal({ open, onOpenChange, vehicle, onSaved }: VehicleMo
             <Input
               id="name"
               value={form.name}
-              onChange={(e) => update('name', e.target.value)}
+              onChange={(e) => update({ name: e.target.value })}
               required
             />
           </div>
@@ -130,7 +130,7 @@ export function VehicleModal({ open, onOpenChange, vehicle, onSaved }: VehicleMo
             <Input
               id="colour"
               value={form.colour}
-              onChange={(e) => update('colour', e.target.value)}
+              onChange={(e) => update({ colour: e.target.value })}
               required
             />
           </div>
@@ -138,7 +138,7 @@ export function VehicleModal({ open, onOpenChange, vehicle, onSaved }: VehicleMo
             <Label htmlFor="engineType">Engine type</Label>
             <Select
               value={form.engineType}
-              onValueChange={(value) => update('engineType', value as EngineType)}
+              onValueChange={(value) => update({ engineType: value as EngineType })}
             >
               <SelectTrigger id="engineType" className="w-full">
                 <SelectValue />
@@ -160,7 +160,7 @@ export function VehicleModal({ open, onOpenChange, vehicle, onSaved }: VehicleMo
               step="0.01"
               min="0"
               value={form.avgConsumption}
-              onChange={(e) => update('avgConsumption', e.target.value)}
+              onChange={(e) => update({ avgConsumption: e.target.value })}
               required
             />
           </div>

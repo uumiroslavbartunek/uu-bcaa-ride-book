@@ -18,5 +18,9 @@ export default defineConfig([
     languageOptions: {
       globals: globals.browser,
     },
+    rules: {
+      // Setting loading state when a fetch starts is the intended pattern here.
+      'react-hooks/set-state-in-effect': 'off',
+    },
   },
 ])

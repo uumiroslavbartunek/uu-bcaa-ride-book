@@ -6,34 +6,23 @@ export function useVehicles() {
   const [vehicles, setVehicles] = useState<Vehicle[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [tick, setTick] = useState(0)
+
+  async function loadVehicles() {
+    setLoading(true)
+    setError(null)
+    try {
+      const data = await getVehicles()
+      setVehicles(data)
+    } catch (err) {
+      setError((err as Error).message)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   useEffect(() => {
-    let active = true
+    loadVehicles()
+  }, [])
 
-    async function load() {
-      setLoading(true)
-      setError(null)
-      try {
-        const data = await getVehicles()
-        if (active) setVehicles(data)
-      } catch (err) {
-        if (active) setError((err as Error).message)
-      } finally {
-        if (active) setLoading(false)
-      }
-    }
-
-    load()
-    return () => {
-      active = false
-    }
-  }, [tick])
-
-  return {
-    vehicles,
-    loading,
-    error,
-    refetch: () => setTick((t) => t + 1),
-  }
+  return { vehicles, loading, error, refetch: loadVehicles }
 }

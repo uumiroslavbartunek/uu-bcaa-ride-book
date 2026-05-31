@@ -72,8 +72,8 @@ export function TripModal({
     reset()
   }, [open, trip, defaultVehicleId])
 
-  function update<K extends keyof FormState>(key: K, value: FormState[K]) {
-    setForm((prev) => ({ ...prev, [key]: value }))
+  function update(patch: Partial<FormState>) {
+    setForm((prev) => ({ ...prev, ...patch }))
   }
 
   async function handleSubmit(event: React.FormEvent) {
@@ -85,15 +85,15 @@ export function TripModal({
     setSubmitting(true)
     setError(null)
 
-    const payload = {
-      vehicleId: form.vehicleId,
-      departure: form.departure.trim(),
-      destination: form.destination.trim(),
-      departureTimestamp: new Date(form.departureTimestamp).toISOString(),
-      distance: Number(form.distance),
-    }
-
     try {
+      const payload = {
+        vehicleId: form.vehicleId,
+        departure: form.departure.trim(),
+        destination: form.destination.trim(),
+        departureTimestamp: new Date(form.departureTimestamp).toISOString(),
+        distance: Number(form.distance),
+      }
+
       if (trip) {
         await updateTrip(trip.id, payload)
       } else {
@@ -117,7 +117,7 @@ export function TripModal({
         <form onSubmit={handleSubmit} className="grid gap-4">
           <div className="grid gap-2">
             <Label htmlFor="vehicle">Vehicle</Label>
-            <Select value={form.vehicleId} onValueChange={(value) => update('vehicleId', value)}>
+            <Select value={form.vehicleId} onValueChange={(value) => update({ vehicleId: value })}>
               <SelectTrigger id="vehicle" className="w-full">
                 <SelectValue placeholder="Select a vehicle" />
               </SelectTrigger>
@@ -135,7 +135,7 @@ export function TripModal({
             <Input
               id="departure"
               value={form.departure}
-              onChange={(e) => update('departure', e.target.value)}
+              onChange={(e) => update({ departure: e.target.value })}
               required
             />
           </div>
@@ -144,7 +144,7 @@ export function TripModal({
             <Input
               id="destination"
               value={form.destination}
-              onChange={(e) => update('destination', e.target.value)}
+              onChange={(e) => update({ destination: e.target.value })}
               required
             />
           </div>
@@ -154,7 +154,7 @@ export function TripModal({
               id="departureTimestamp"
               type="datetime-local"
               value={form.departureTimestamp}
-              onChange={(e) => update('departureTimestamp', e.target.value)}
+              onChange={(e) => update({ departureTimestamp: e.target.value })}
               required
             />
           </div>
@@ -166,7 +166,7 @@ export function TripModal({
               step="0.01"
               min="0"
               value={form.distance}
-              onChange={(e) => update('distance', e.target.value)}
+              onChange={(e) => update({ distance: e.target.value })}
               required
             />
           </div>

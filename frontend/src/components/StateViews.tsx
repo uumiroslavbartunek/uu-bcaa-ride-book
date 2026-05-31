@@ -14,11 +14,11 @@ export function ErrorState({ message, onRetry }: { message: string; onRetry?: ()
     <div className="flex flex-col items-center gap-3 rounded-lg border border-destructive/30 bg-destructive/5 px-4 py-8 text-center">
       <AlertCircle className="size-5 text-destructive" />
       <p className="text-sm text-destructive">{message}</p>
-      {onRetry && (
+      {onRetry ? (
         <Button variant="outline" size="sm" onClick={onRetry}>
           Try again
         </Button>
-      )}
+      ) : null}
     </div>
   )
 }
